@@ -4,6 +4,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { themeInitScript } from "@/components/ThemeToggle";
+import { ChatWidget } from "@/components/ChatWidget";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,6 +55,10 @@ export default function RootLayout({
             </div>
           </footer>
         </div>
+        <ChatWidget
+          name="Resolvd"
+          greeting="Hi! Ask me about Resolvd, ticket triage, or when something auto-resolves vs escalates."
+        />
       </body>
     </html>
   );
