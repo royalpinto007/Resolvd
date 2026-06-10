@@ -3,20 +3,40 @@ import type { Ticket } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+const PER_PAGE = 20;
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) {
   const supabase = db();
+  const page = Math.max(1, parseInt(searchParams.page ?? "1", 10) || 1);
+  const from = (page - 1) * PER_PAGE;
+  const to = from + PER_PAGE - 1;
+
+  // Aggregate counts span all tickets; the list itself is paginated.
+  const countOf = async (status?: string) => {
+    let q = supabase
+      .from("rv_tickets")
+      .select("*", { count: "exact", head: true });
+    if (status) q = q.eq("status", status);
+    const { count } = await q;
+    return count ?? 0;
+  };
+  const total = await countOf();
+  const resolved = await countOf("resolved");
+  const escalated = await countOf("escalated");
+  const autoRate = total ? Math.round((resolved / total) * 100) : 0;
+  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+
   const { data } = await supabase
     .from("rv_tickets")
     .select("*")
     .order("created_at", { ascending: false })
-    .limit(100);
+    .range(from, to);
 
   const tickets = (data ?? []) as Ticket[];
-  const resolved = tickets.filter((t) => t.status === "resolved").length;
-  const escalated = tickets.filter((t) => t.status === "escalated").length;
-  const autoRate = tickets.length
-    ? Math.round((resolved / tickets.length) * 100)
-    : 0;
 
   return (
     <div className="space-y-10">
@@ -35,7 +55,7 @@ export default async function Home() {
       </section>
 
       <section className="grid grid-cols-1 gap-3 animate-fade-in sm:grid-cols-3">
-        <Metric label="Tickets" value={tickets.length} />
+        <Metric label="Tickets" value={total} />
         <Metric label="Auto-resolved" value={`${autoRate}%`} tone="good" />
         <Metric
           label="Awaiting human"
@@ -106,8 +126,34 @@ export default async function Home() {
             ))}
           </div>
         )}
+        {totalPages > 1 && <Pagination page={page} totalPages={totalPages} />}
       </section>
     </div>
+  );
+}
+
+function Pagination({ page, totalPages }: { page: number; totalPages: number }) {
+  const linkCls =
+    "rounded-lg border border-border bg-surface px-3 py-1.5 text-[13px] transition hover:border-accent/50 hover:text-text";
+  const disabled = "pointer-events-none opacity-40";
+  return (
+    <nav className="flex items-center justify-between pt-2 text-muted">
+      <a
+        href={`/?page=${page - 1}`}
+        className={`${linkCls} ${page <= 1 ? disabled : ""}`}
+      >
+        ← Newer
+      </a>
+      <span className="text-[12px]">
+        Page {page} of {totalPages}
+      </span>
+      <a
+        href={`/?page=${page + 1}`}
+        className={`${linkCls} ${page >= totalPages ? disabled : ""}`}
+      >
+        Older →
+      </a>
+    </nav>
   );
 }
 

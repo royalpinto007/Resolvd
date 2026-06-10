@@ -58,6 +58,18 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Cap retained tickets so the demo data plateaus instead of growing forever.
+  const CAP = 60;
+  const { data: edge } = await supabase
+    .from("rv_tickets")
+    .select("created_at")
+    .order("created_at", { ascending: false })
+    .range(CAP, CAP);
+  const cutoff = (edge as { created_at: string }[] | null)?.[0]?.created_at;
+  if (cutoff) {
+    await supabase.from("rv_tickets").delete().lt("created_at", cutoff);
+  }
+
   return NextResponse.json({
     ok: true,
     id: (data as { id: string }).id,
