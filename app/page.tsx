@@ -69,7 +69,12 @@ export default async function Home({
         <DemoButton />
       </div>
 
-      <Flow />
+      <StatusDonut
+        resolved={resolved}
+        escalated={escalated}
+        pending={Math.max(0, total - resolved - escalated)}
+        autoRate={autoRate}
+      />
 
       {/* Inbox: filter rail + ticket list */}
       <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
@@ -167,41 +172,92 @@ export default async function Home({
   );
 }
 
-function Flow() {
-  const steps = [
-    { t: "Message arrives", d: "A ticket hits the inbound endpoint." },
-    { t: "Triage", d: "Category, urgency, sentiment, and a draft reply." },
-    { t: "Act in policy", d: "Safe cases handled end to end automatically." },
-    { t: "Escalate", d: "Risky cases go to a human in Greenlite." },
-  ];
-  const dur = 2.8;
+function StatusDonut({
+  resolved,
+  escalated,
+  pending,
+  autoRate,
+}: {
+  resolved: number;
+  escalated: number;
+  pending: number;
+  autoRate: number;
+}) {
+  const total = resolved + escalated + pending;
+  if (!total) return null;
+  const segs = [
+    { label: "Resolved", value: resolved, color: "rgb(var(--good))" },
+    { label: "Escalated", value: escalated, color: "rgb(var(--accent))" },
+    { label: "Pending", value: pending, color: "rgb(var(--muted))" },
+  ].filter((s) => s.value > 0);
+
+  let cum = 0;
   return (
     <section className="glass rounded-2xl p-5 sm:p-6">
-      <h2 className="mb-6 flex items-center gap-2 text-sm font-medium text-muted">
-        How it works
+      <h2 className="mb-5 flex items-center gap-2 text-sm font-medium text-muted">
+        Triage outcomes
         <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-          running
+          updates hourly
         </span>
       </h2>
-      <div className="relative">
-        <div className="flow-track" />
-        <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-4">
-          {steps.map((s, i) => (
-            <div
-              key={s.t}
-              className="flex flex-col items-center text-center sm:items-start sm:text-left"
-            >
-              <div
-                className="flow-ico grid h-[42px] w-[42px] place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-[15px] font-bold text-bg"
-                style={{ animationDelay: `${((i * dur) / steps.length).toFixed(2)}s` }}
-              >
-                {i + 1}
+      <div className="flex flex-col items-center gap-7 sm:flex-row sm:gap-9">
+        <div className="relative h-[150px] w-[150px] shrink-0">
+          <svg viewBox="0 0 160 160" className="h-full w-full -rotate-90">
+            <circle
+              cx="80"
+              cy="80"
+              r="56"
+              fill="none"
+              stroke="rgb(var(--text) / 0.06)"
+              strokeWidth="16"
+            />
+            {segs.map((s, i) => {
+              const off = cum;
+              cum += (s.value / total) * 100;
+              return (
+                <circle
+                  key={s.label}
+                  cx="80"
+                  cy="80"
+                  r="56"
+                  fill="none"
+                  stroke={s.color}
+                  strokeWidth="16"
+                  pathLength={100}
+                  strokeDashoffset={-off}
+                  className="donut-seg"
+                  style={
+                    {
+                      "--p": ((s.value / total) * 100).toFixed(2),
+                      animationDelay: `${(i * 0.25).toFixed(2)}s`,
+                    } as React.CSSProperties
+                  }
+                />
+              );
+            })}
+          </svg>
+          <div className="absolute inset-0 grid place-items-center text-center">
+            <div>
+              <div className="text-2xl font-semibold tabular-nums">
+                {autoRate}%
               </div>
-              <div className="mt-3 text-[13.5px] font-semibold">{s.t}</div>
-              <div className="mt-1 text-[12px] leading-relaxed text-muted">
-                {s.d}
-              </div>
+              <div className="text-[11px] text-muted">auto-resolved</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid w-full gap-2.5 sm:max-w-xs">
+          {segs.map((s) => (
+            <div key={s.label} className="flex items-center gap-3 text-[13px]">
+              <span
+                className="h-2.5 w-2.5 rounded-sm"
+                style={{ background: s.color }}
+              />
+              <span className="flex-1">{s.label}</span>
+              <span className="tabular-nums text-muted">
+                {s.value} · {Math.round((s.value / total) * 100)}%
+              </span>
             </div>
           ))}
         </div>
