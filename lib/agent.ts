@@ -91,6 +91,6 @@ function heuristicTriage(subject: string, body: string): Triage {
     refundAmount,
     summary: subject || body.slice(0, 80),
     draftReply:
-      "Thanks for reaching out — we're looking into this and will follow up shortly.",
+      "Thanks for reaching out, we're looking into this and will follow up shortly.",
   };
 }

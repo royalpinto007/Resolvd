@@ -3,7 +3,7 @@ import { db, checkInboundToken } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
-// POST /api/approve — a human approves (or rejects) an escalated ticket's
+// POST /api/approve, a human approves (or rejects) an escalated ticket's
 // proposed action. On approve, the action is recorded and the ticket resolved.
 export async function POST(req: NextRequest) {
   if (!checkInboundToken(req.headers.get("x-resolvd-token"))) {

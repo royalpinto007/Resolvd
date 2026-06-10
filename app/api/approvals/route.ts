@@ -3,7 +3,7 @@ import { db, checkInboundToken } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
-// GET /api/approvals — the queue of escalated tickets awaiting a human decision.
+// GET /api/approvals, the queue of escalated tickets awaiting a human decision.
 // Server-side (service-role) read so clients (e.g. the Greenlite mobile app)
 // never touch Supabase directly. Auth via the shared x-resolvd-token header.
 export async function GET(req: NextRequest) {

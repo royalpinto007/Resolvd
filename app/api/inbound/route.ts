@@ -6,7 +6,7 @@ import type { InboundPayload } from "@/lib/types";
 
 export const runtime = "nodejs";
 
-// POST /api/inbound — a new support message arrives (from a helpdesk webhook or
+// POST /api/inbound, a new support message arrives (from a helpdesk webhook or
 // email forwarder). Resolvd triages it, applies policy, and either auto-resolves
 // (safe actions) or stores it as escalated with the proposed action attached.
 export async function POST(req: NextRequest) {

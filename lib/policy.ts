@@ -21,7 +21,7 @@ export function decide(triage: Triage, payload: InboundPayload): Decision {
       status: "escalated",
       proposedAction: "Personal apology + offer remedy",
       actionTaken: null,
-      reason: "negative sentiment at high urgency — needs a human touch",
+      reason: "negative sentiment at high urgency, needs a human touch",
       draftReply: triage.draftReply,
     };
   }
@@ -44,7 +44,7 @@ export function decide(triage: Triage, payload: InboundPayload): Decision {
         proposedAction: `Reply with status for ${payload.orderId}`,
         actionTaken: `Sent order status (${status}) for ${payload.orderId}`,
         reason: "read-only lookup, safe to auto-handle",
-        draftReply: `Hi — your order ${payload.orderId} is currently "${status}". ${triage.draftReply}`,
+        draftReply: `Hi, your order ${payload.orderId} is currently "${status}". ${triage.draftReply}`,
       };
     }
 
@@ -56,7 +56,7 @@ export function decide(triage: Triage, payload: InboundPayload): Decision {
           proposedAction: `Issue refund of $${amount}`,
           actionTaken: `Issued refund of $${amount} (within $${refundAutoLimit} auto-limit)`,
           reason: `refund $${amount} <= auto-limit $${refundAutoLimit}`,
-          draftReply: `Hi — we've issued your refund of $${amount}. ${triage.draftReply}`,
+          draftReply: `Hi, we've issued your refund of $${amount}. ${triage.draftReply}`,
         };
       }
       return {

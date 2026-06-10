@@ -20,7 +20,7 @@ export default async function Home() {
 
   return (
     <div className="space-y-10">
-      <section className="space-y-3">
+      <section className="space-y-3 animate-fade-up">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[11px] uppercase tracking-widest text-muted">
           support autonomy
         </span>
@@ -34,7 +34,7 @@ export default async function Home() {
         </p>
       </section>
 
-      <section className="grid grid-cols-3 gap-3">
+      <section className="grid grid-cols-1 gap-3 animate-fade-in sm:grid-cols-3">
         <Metric label="Tickets" value={tickets.length} />
         <Metric label="Auto-resolved" value={`${autoRate}%`} tone="good" />
         <Metric
@@ -44,12 +44,14 @@ export default async function Home() {
         />
       </section>
 
+      <HowItWorks />
+
       <section className="space-y-3">
         <h2 className="text-sm font-medium text-muted">Recent tickets</h2>
         {tickets.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="grid gap-3">
+          <div className="stagger grid gap-3">
             {tickets.map((t) => (
               <article
                 key={t.id}
@@ -83,7 +85,7 @@ export default async function Home() {
                       {t.action_taken ? "action taken" : "proposed action"}
                     </Label>
                     <div className="mt-1 text-[13px]">
-                      {t.action_taken || t.proposed_action || "—"}
+                      {t.action_taken || t.proposed_action || "-"}
                     </div>
                     {t.reason && (
                       <div className="mt-1.5 text-[11px] text-muted">
@@ -106,6 +108,38 @@ export default async function Home() {
         )}
       </section>
     </div>
+  );
+}
+
+function HowItWorks() {
+  const steps = [
+    { n: "1", t: "Message arrives", d: "A ticket hits the inbound endpoint from your helpdesk or email." },
+    { n: "2", t: "Triage", d: "Category, urgency, sentiment, and a draft reply are generated." },
+    { n: "3", t: "Act in policy", d: "Safe cases (status, small refunds) are handled end to end." },
+    { n: "4", t: "Escalate the rest", d: "Risky cases go to a human with the proposed action attached." },
+  ];
+  return (
+    <section className="rounded-2xl border border-border bg-surface p-5 shadow-card animate-fade-in">
+      <h2 className="mb-4 text-sm font-medium text-muted">How it works</h2>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
+        {steps.map((s, i) => (
+          <div key={s.n} className="relative rounded-xl bg-bg p-4">
+            <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-accent to-accent-2 text-[13px] font-bold text-bg">
+              {s.n}
+            </div>
+            <div className="mt-2.5 text-[13.5px] font-semibold">{s.t}</div>
+            <div className="mt-1 text-[12px] leading-relaxed text-muted">
+              {s.d}
+            </div>
+            {i < steps.length - 1 && (
+              <span className="absolute -right-2 top-1/2 hidden text-muted sm:block">
+                →
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
