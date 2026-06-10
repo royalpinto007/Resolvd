@@ -4,20 +4,20 @@
 
 /* Dark is the default theme. */
 :root {
-  --bg: 8 8 10;
-  --surface: 17 17 20;
-  --surface-2: 23 23 28;
-  --border: 38 38 46;
-  --border-soft: 29 29 35;
-  --muted: 139 139 150;
-  --text: 237 237 242;
-  --accent: 110 139 255;
-  --accent-2: 54 214 195;
+  --bg: 12 10 16;
+  --surface: 22 18 28;
+  --surface-2: 28 23 36;
+  --border: 46 40 56;
+  --border-soft: 34 29 42;
+  --muted: 150 142 160;
+  --text: 240 237 245;
+  --accent: 167 139 250;
+  --accent-2: 217 70 239;
   --good: 63 185 80;
   --bad: 248 81 73;
   --warn: 227 160 8;
-  --glow-1: 110 139 255;
-  --glow-2: 54 214 195;
+  --glow-1: 139 92 246;
+  --glow-2: 217 70 239;
   color-scheme: dark;
 }
 
@@ -29,13 +29,18 @@
   --border-soft: 235 236 240;
   --muted: 95 98 110;
   --text: 18 20 27;
-  --accent: 79 102 241;
-  --accent-2: 13 148 136;
+  --bg: 250 249 252;
+  --surface: 255 255 255;
+  --surface-2: 248 246 251;
+  --border: 230 226 236;
+  --border-soft: 238 235 242;
+  --accent: 124 58 237;
+  --accent-2: 168 85 247;
   --good: 22 134 60;
   --bad: 201 42 42;
   --warn: 176 116 4;
-  --glow-1: 79 102 241;
-  --glow-2: 13 148 136;
+  --glow-1: 124 58 237;
+  --glow-2: 168 85 247;
   color-scheme: light;
 }
 

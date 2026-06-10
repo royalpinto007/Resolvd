@@ -23,11 +23,9 @@ export default function RootLayout({
       <body className="app-bg min-h-screen font-sans antialiased">
         <div className="relative z-10 flex min-h-screen flex-col">
           <Nav />
-          <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-10">
-            {children}
-          </main>
-          <footer className="border-t border-border-soft">
-            <div className="mx-auto flex max-w-5xl flex-col gap-2 px-5 py-6 text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between">
+          <main className="w-full flex-1 px-5 py-8 md:px-8">{children}</main>
+          <footer className="border-t border-border-soft px-5 py-5 md:px-8">
+            <div className="flex flex-col gap-2 text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between">
               <span>Triage, act within policy, escalate the rest.</span>
               <span className="flex gap-4">
                 <Link href="/about" className="transition hover:text-text">
