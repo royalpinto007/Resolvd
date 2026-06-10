@@ -3,11 +3,21 @@ import { db, checkInboundToken } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
+const CORS = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "POST,OPTIONS",
+  "access-control-allow-headers": "content-type,x-resolvd-token",
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS });
+}
+
 // POST /api/approve, a human approves (or rejects) an escalated ticket's
 // proposed action. On approve, the action is recorded and the ticket resolved.
 export async function POST(req: NextRequest) {
   if (!checkInboundToken(req.headers.get("x-resolvd-token"))) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "unauthorized" }, { status: 401, headers: CORS });
   }
 
   const { id, approve } = (await req.json().catch(() => ({}))) as {
@@ -51,5 +61,5 @@ export async function POST(req: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json({ ok: true, approved: !!approve });
+  return NextResponse.json({ ok: true, approved: !!approve }, { headers: CORS });
 }
