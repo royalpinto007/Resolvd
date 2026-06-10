@@ -25,7 +25,7 @@ export function AiDigest({
       const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, max: 130 }),
       });
       const d = (await res.json()) as { reply?: string; error?: string };
       setText(d.reply || `Unavailable (${d.error ?? "?"}).`);

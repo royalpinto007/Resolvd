@@ -72,14 +72,14 @@ export default async function Home({
           customers) to a human with a proposed action attached. The list below
           is a live feed of what it has handled.
         </p>
-        <div className="mt-5 flex flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="mt-5 flex flex-col gap-4">
+          <div className="flex flex-wrap items-start gap-3">
             <DemoButton />
-            <span className="text-[12px] text-muted">
-              {autoRate}% auto-resolved · {escalated} waiting on a human
-            </span>
+            <AiDigest total={total} resolved={resolved} escalated={escalated} />
           </div>
-          <AiDigest total={total} resolved={resolved} escalated={escalated} />
+          <p className="text-[12px] text-muted">
+            {autoRate}% auto-resolved · {escalated} waiting on a human
+          </p>
         </div>
       </section>
 
@@ -215,7 +215,7 @@ function StatusDonut({
           updates hourly
         </span>
       </h2>
-      <div className="flex flex-col items-center gap-7 sm:flex-row sm:gap-9">
+      <div className="flex flex-col items-center gap-7 sm:flex-row sm:justify-center sm:gap-14">
         <div className="relative h-[150px] w-[150px] shrink-0">
           <svg viewBox="0 0 160 160" className="h-full w-full -rotate-90">
             <circle
