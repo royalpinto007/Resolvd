@@ -1,5 +1,6 @@
 import { db } from "@/lib/supabase";
 import type { Ticket } from "@/lib/types";
+import { DemoButton } from "@/components/DemoButton";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +53,9 @@ export default async function Home({
           end to end, and escalates the rest with the proposed action already
           attached, ready for one-tap approval.
         </p>
+        <div className="pt-1">
+          <DemoButton />
+        </div>
       </section>
 
       <section className="grid grid-cols-1 gap-3 animate-fade-in sm:grid-cols-3">
