@@ -57,9 +57,9 @@ export default async function Home({
   return (
     <div className="space-y-6">
       {/* Header band with the live action */}
-      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-5 shadow-card animate-fade-up md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 glass rounded-2xl p-5 animate-fade-up md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="gradient-text text-2xl font-semibold tracking-tight">
             Support inbox
           </h1>
           <p className="mt-1 text-[13px] text-muted">
@@ -102,7 +102,7 @@ export default async function Home({
           {tickets.length === 0 ? (
             <EmptyState />
           ) : (
-            <div className="stagger overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
+            <div className="stagger glass overflow-hidden rounded-2xl">
               {tickets.map((t) => (
                 <article
                   key={t.id}
