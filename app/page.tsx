@@ -69,6 +69,8 @@ export default async function Home({
         <DemoButton />
       </div>
 
+      <Flow />
+
       {/* Inbox: filter rail + ticket list */}
       <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
         <aside className="space-y-1.5 lg:sticky lg:top-20 lg:self-start">
@@ -162,6 +164,49 @@ export default async function Home({
         </section>
       </div>
     </div>
+  );
+}
+
+function Flow() {
+  const steps = [
+    { t: "Message arrives", d: "A ticket hits the inbound endpoint." },
+    { t: "Triage", d: "Category, urgency, sentiment, and a draft reply." },
+    { t: "Act in policy", d: "Safe cases handled end to end automatically." },
+    { t: "Escalate", d: "Risky cases go to a human in Greenlite." },
+  ];
+  const dur = 2.8;
+  return (
+    <section className="glass rounded-2xl p-5 sm:p-6">
+      <h2 className="mb-6 flex items-center gap-2 text-sm font-medium text-muted">
+        How it works
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+          running
+        </span>
+      </h2>
+      <div className="relative">
+        <div className="flow-track" />
+        <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-4">
+          {steps.map((s, i) => (
+            <div
+              key={s.t}
+              className="flex flex-col items-center text-center sm:items-start sm:text-left"
+            >
+              <div
+                className="flow-ico grid h-[42px] w-[42px] place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 text-[15px] font-bold text-bg"
+                style={{ animationDelay: `${((i * dur) / steps.length).toFixed(2)}s` }}
+              >
+                {i + 1}
+              </div>
+              <div className="mt-3 text-[13.5px] font-semibold">{s.t}</div>
+              <div className="mt-1 text-[12px] leading-relaxed text-muted">
+                {s.d}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
