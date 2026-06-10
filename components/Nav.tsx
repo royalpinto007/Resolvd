@@ -17,9 +17,7 @@ export function Nav() {
               />
             </svg>
           </span>
-          <span className="text-[15px] font-semibold tracking-tight">
-            resolvd
-          </span>
+          <span className="text-[15px] font-semibold tracking-tight">Resolvd</span>
           <span className="hidden rounded-full bg-accent/12 px-2 py-0.5 text-[11px] font-medium text-accent sm:inline">
             inbox
           </span>

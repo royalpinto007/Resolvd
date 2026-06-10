@@ -2,6 +2,7 @@ import Link from "next/link";
 import { db } from "@/lib/supabase";
 import type { Ticket } from "@/lib/types";
 import { DemoButton } from "@/components/DemoButton";
+import { AiDigest } from "@/components/AiDigest";
 
 export const dynamic = "force-dynamic";
 
@@ -56,18 +57,31 @@ export default async function Home({
 
   return (
     <div className="space-y-6">
-      {/* Header band with the live action */}
-      <div className="flex flex-col gap-4 glass rounded-2xl p-5 animate-fade-up md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="gradient-text text-2xl font-semibold tracking-tight">
-            Support inbox
-          </h1>
-          <p className="mt-1 text-[13px] text-muted">
-            {autoRate}% auto-resolved · {escalated} waiting on a human
-          </p>
+      {/* Explainer hero so a first-time visitor understands what Resolvd is */}
+      <section className="glass rounded-2xl p-6 animate-fade-up sm:p-7">
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[11px] uppercase tracking-widest text-muted">
+          AI support inbox
+        </span>
+        <h1 className="gradient-text mt-3 text-3xl font-semibold tracking-tight sm:text-[2.4rem]">
+          Reads every ticket, then acts.
+        </h1>
+        <p className="mt-2 max-w-2xl text-[14.5px] leading-relaxed text-muted">
+          Resolvd triages each incoming support message (category, urgency,
+          sentiment), auto-handles the safe cases end to end , order status,
+          small refunds , and escalates the risky ones (large refunds, angry
+          customers) to a human with a proposed action attached. The list below
+          is a live feed of what it has handled.
+        </p>
+        <div className="mt-5 flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <DemoButton />
+            <span className="text-[12px] text-muted">
+              {autoRate}% auto-resolved · {escalated} waiting on a human
+            </span>
+          </div>
+          <AiDigest total={total} resolved={resolved} escalated={escalated} />
         </div>
-        <DemoButton />
-      </div>
+      </section>
 
       <StatusDonut
         resolved={resolved}
