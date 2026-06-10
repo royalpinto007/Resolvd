@@ -3,12 +3,6 @@ import type { Ticket } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-const statusTone: Record<string, string> = {
-  resolved: "text-good",
-  escalated: "text-warn",
-  pending: "text-muted",
-};
-
 export default async function Home() {
   const supabase = db();
   const { data } = await supabase
@@ -25,99 +19,173 @@ export default async function Home() {
     : 0;
 
   return (
-    <div className="space-y-8">
-      <section>
-        <h1 className="text-lg font-semibold">Tickets</h1>
-        <p className="mt-1 text-sm text-muted">
-          Resolvd triages each incoming message, then auto-handles the safe cases
-          and escalates the rest with a proposed action. {tickets.length} tickets
-          · {autoRate}% auto-resolved · {escalated} awaiting a human.
+    <div className="space-y-10">
+      <section className="space-y-3">
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[11px] uppercase tracking-widest text-muted">
+          support autonomy
+        </span>
+        <h1 className="text-balance text-3xl font-semibold tracking-tight">
+          It doesn&apos;t just draft. It acts.
+        </h1>
+        <p className="max-w-xl text-[15px] leading-relaxed text-muted">
+          Resolvd triages every incoming message, auto-handles the safe cases
+          end to end, and escalates the rest with the proposed action already
+          attached, ready for one-tap approval.
         </p>
       </section>
 
-      {tickets.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className="space-y-3">
-          {tickets.map((t) => (
-            <div
-              key={t.id}
-              className={`rounded-lg border p-4 bg-surface ${
-                t.status === "escalated" ? "border-warn/40" : "border-border"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">
-                  {t.subject || "(no subject)"}{" "}
-                  <span className="text-xs text-muted">— {t.sender}</span>
-                </span>
-                <span className="flex items-center gap-2 text-xs">
-                  {t.category && (
-                    <span className="rounded bg-bg px-2 py-0.5 text-muted">
-                      {t.category}
-                    </span>
-                  )}
-                  {t.urgency === "high" && (
-                    <span className="rounded bg-bad/15 px-2 py-0.5 text-bad">
-                      high
-                    </span>
-                  )}
-                  <span
-                    className={`uppercase ${statusTone[t.status] ?? "text-muted"}`}
-                  >
-                    {t.status}
-                  </span>
-                </span>
-              </div>
+      <section className="grid grid-cols-3 gap-3">
+        <Metric label="Tickets" value={tickets.length} />
+        <Metric label="Auto-resolved" value={`${autoRate}%`} tone="good" />
+        <Metric
+          label="Awaiting human"
+          value={escalated}
+          tone={escalated > 0 ? "warn" : "good"}
+        />
+      </section>
 
-              <p className="mt-2 text-xs text-muted">{t.body}</p>
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium text-muted">Recent tickets</h2>
+        {tickets.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div className="grid gap-3">
+            {tickets.map((t) => (
+              <article
+                key={t.id}
+                className="rounded-2xl border border-border bg-surface p-5 shadow-card"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">
+                        {t.subject || "(no subject)"}
+                      </span>
+                      <StatusDot status={t.status} />
+                    </div>
+                    <div className="mt-0.5 text-[12px] text-muted">
+                      {t.sender}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {t.category && <Tag>{t.category}</Tag>}
+                    {t.urgency === "high" && <Pill tone="bad">high</Pill>}
+                  </div>
+                </div>
 
-              <div className="mt-3 grid gap-3 text-xs sm:grid-cols-2">
-                <div className="rounded bg-bg p-2">
-                  <div className="mb-1 text-[11px] uppercase tracking-widest text-muted">
-                    {t.action_taken ? "action taken" : "proposed action"}
+                <p className="mt-3 line-clamp-2 text-[13px] text-muted">
+                  {t.body}
+                </p>
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl bg-bg p-3">
+                    <Label>
+                      {t.action_taken ? "action taken" : "proposed action"}
+                    </Label>
+                    <div className="mt-1 text-[13px]">
+                      {t.action_taken || t.proposed_action || "—"}
+                    </div>
+                    {t.reason && (
+                      <div className="mt-1.5 text-[11px] text-muted">
+                        {t.reason}
+                      </div>
+                    )}
                   </div>
-                  <div className="text-text">
-                    {t.action_taken || t.proposed_action || "—"}
-                  </div>
-                  {t.reason && (
-                    <div className="mt-1 text-[11px] text-muted">{t.reason}</div>
+                  {t.draft_reply && (
+                    <div className="rounded-xl bg-bg p-3">
+                      <Label>draft reply</Label>
+                      <div className="mt-1 whitespace-pre-wrap text-[13px] text-muted">
+                        {t.draft_reply}
+                      </div>
+                    </div>
                   )}
                 </div>
-                {t.draft_reply && (
-                  <div className="rounded bg-bg p-2">
-                    <div className="mb-1 text-[11px] uppercase tracking-widest text-muted">
-                      draft reply
-                    </div>
-                    <div className="whitespace-pre-wrap text-text">
-                      {t.draft_reply}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+function Metric({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number | string;
+  tone?: "good" | "warn";
+}) {
+  const color =
+    tone === "warn" ? "text-warn" : tone === "good" ? "text-good" : "text-text";
+  return (
+    <div className="rounded-2xl border border-border bg-surface p-4 shadow-card">
+      <div className={`text-2xl font-semibold tabular-nums ${color}`}>
+        {value}
+      </div>
+      <div className="mt-1 text-[12px] text-muted">{label}</div>
+    </div>
+  );
+}
+
+function StatusDot({ status }: { status: string }) {
+  const map: Record<string, { c: string; t: string }> = {
+    resolved: { c: "bg-good", t: "text-good" },
+    escalated: { c: "bg-warn", t: "text-warn" },
+    pending: { c: "bg-muted", t: "text-muted" },
+  };
+  const s = map[status] ?? map.pending;
+  return (
+    <span className={`inline-flex items-center gap-1.5 text-[11px] ${s.t}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${s.c}`} />
+      {status}
+    </span>
+  );
+}
+
+function Tag({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-md bg-bg px-2 py-0.5 text-[11px] text-muted">
+      {children}
+    </span>
+  );
+}
+
+function Pill({
+  children,
+  tone,
+}: {
+  children: React.ReactNode;
+  tone: "bad";
+}) {
+  return (
+    <span className="rounded-md bg-bad/12 px-2 py-0.5 text-[11px] font-medium text-bad">
+      {children}
+    </span>
+  );
+}
+
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-[10px] uppercase tracking-widest text-muted">
+      {children}
     </div>
   );
 }
 
 function EmptyState() {
   return (
-    <div className="rounded-lg border border-dashed border-border bg-surface p-6 text-sm">
+    <div className="rounded-2xl border border-dashed border-border bg-surface p-6 text-sm shadow-card">
       <p className="font-medium">No tickets yet.</p>
       <p className="mt-1 text-muted">Send one to the inbound endpoint:</p>
-      <pre className="mt-3 overflow-x-auto rounded bg-bg p-3 text-xs text-text">
+      <pre className="mt-3 overflow-x-auto rounded-xl bg-bg p-4 text-xs leading-relaxed text-muted">
         {`curl -X POST "$RESOLVD_URL/api/inbound" \\
-  -H "x-resolvd-token: $RESOLVD_INBOUND_TOKEN" \\
+  -H "x-resolvd-token: $TOKEN" \\
   -H "content-type: application/json" \\
-  -d '{
-    "sender": "sam@buyer.com",
-    "subject": "Where is my order?",
-    "body": "Hi, can you tell me the status of my order?",
-    "orderId": "1042"
-  }'`}
+  -d '{ "sender": "sam@buyer.com", "subject": "Where is my order?",
+        "body": "status?", "orderId": "1042" }'`}
       </pre>
     </div>
   );
