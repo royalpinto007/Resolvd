@@ -36,11 +36,11 @@ export function DemoButton() {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <button
           onClick={run}
           disabled={busy}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-accent to-accent-2 px-4 py-2 text-[13px] font-semibold text-bg transition hover:opacity-90 disabled:opacity-60"
+          className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-gradient-to-br from-accent to-accent-2 px-4 py-2 text-[13px] font-semibold text-bg transition hover:opacity-90 disabled:opacity-60"
         >
           {busy ? "Sending…" : "▶ Send a test ticket"}
         </button>
@@ -67,7 +67,9 @@ export function DemoButton() {
             {resolved ? result.actionTaken : result.proposedAction}
           </div>
           {result.reason && (
-            <div className="mt-1 text-[12px] text-muted">why: {result.reason}</div>
+            <div className="mt-1 text-[12px] text-muted">
+              why: {result.reason}
+            </div>
           )}
           <div className="mt-2 text-[12px] text-muted">
             It is now the top item in Recent tickets below.
