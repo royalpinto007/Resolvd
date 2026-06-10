@@ -37,13 +37,10 @@ export default async function Home({
   const total = await countOf();
   const resolved = await countOf("resolved");
   const escalated = await countOf("escalated");
+  const pending = Math.max(0, total - resolved - escalated);
   const autoRate = total ? Math.round((resolved / total) * 100) : 0;
 
-  const counts: Record<string, number> = {
-    all: total,
-    escalated,
-    resolved,
-  };
+  const counts: Record<string, number> = { all: total, escalated, resolved };
   const filtered = counts[status];
   const totalPages = Math.max(1, Math.ceil(filtered / PER_PAGE));
 
@@ -57,63 +54,87 @@ export default async function Home({
 
   return (
     <div className="space-y-6">
-      {/* Explainer hero so a first-time visitor understands what Resolvd is */}
-      <section className="glass rounded-2xl p-6 animate-fade-up sm:p-7">
-        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[11px] uppercase tracking-widest text-muted">
-          AI support inbox
-        </span>
-        <h1 className="gradient-text mt-3 text-3xl font-semibold tracking-tight sm:text-[2.4rem]">
-          Reads every ticket, then acts.
-        </h1>
-        <p className="mt-2 max-w-2xl text-[14.5px] leading-relaxed text-muted">
-          Resolvd triages each incoming support message (category, urgency,
-          sentiment), auto-handles the safe cases end to end , order status,
-          small refunds , and escalates the risky ones (large refunds, angry
-          customers) to a human with a proposed action attached. The list below
-          is a live feed of what it has handled.
-        </p>
-        <div className="mt-5 flex flex-col gap-4">
-          <div className="flex flex-wrap items-start gap-3">
-            <DemoButton />
-            <AiDigest total={total} resolved={resolved} escalated={escalated} />
-          </div>
-          <p className="text-[12px] text-muted">
-            {autoRate}% auto-resolved · {escalated} waiting on a human
+      {/* ---- Compact hero: two columns on desktop (copy + CTAs left, live
+           triage summary right). Collapses to a single column on mobile. ---- */}
+      <section className="grid items-stretch gap-4 lg:grid-cols-[1.35fr_1fr]">
+        <div className="glass flex flex-col rounded-2xl p-6 animate-fade-up">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[11px] uppercase tracking-widest text-muted">
+            AI support inbox
+          </span>
+          <h1 className="gradient-text mt-3 text-[1.9rem] font-semibold leading-tight tracking-tight sm:text-[2.2rem]">
+            Reads every ticket, then acts.
+          </h1>
+          <p className="mt-2 max-w-xl text-[14px] leading-relaxed text-muted">
+            Resolvd triages each message (category, urgency, sentiment),
+            auto-handles the safe cases end to end, and escalates the risky ones
+            to a human with a proposed action attached.
           </p>
+
+          <div className="mt-auto pt-5">
+            <div className="flex flex-wrap items-start gap-2.5">
+              <DemoButton />
+              <AiDigest
+                total={total}
+                resolved={resolved}
+                escalated={escalated}
+              />
+            </div>
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-[12px] text-muted">
+              <span>
+                <span className="font-semibold text-text tabular-nums">
+                  {autoRate}%
+                </span>{" "}
+                auto-resolved
+              </span>
+              <span>
+                <span className="font-semibold text-text tabular-nums">
+                  {escalated}
+                </span>{" "}
+                waiting on a human
+              </span>
+              <span>
+                <span className="font-semibold text-text tabular-nums">
+                  {total}
+                </span>{" "}
+                tickets handled
+              </span>
+            </div>
+          </div>
         </div>
+
+        <TriagePanel
+          resolved={resolved}
+          escalated={escalated}
+          pending={pending}
+          autoRate={autoRate}
+        />
       </section>
 
-      <StatusDonut
-        resolved={resolved}
-        escalated={escalated}
-        pending={Math.max(0, total - resolved - escalated)}
-        autoRate={autoRate}
-      />
-
-      {/* Inbox: filter rail + ticket list */}
-      <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
-        <aside className="space-y-1.5 lg:sticky lg:top-20 lg:self-start">
+      {/* ---- Inbox: filters + ticket list. Desktop = sidebar + list,
+           tablet/mobile = horizontal filter tabs above a full-width list. ---- */}
+      <div className="grid gap-5 lg:grid-cols-[200px_1fr]">
+        <aside className="flex flex-row flex-wrap gap-2 lg:flex-col lg:gap-1.5 lg:sticky lg:top-20 lg:self-start">
           {FILTERS.map((f) => {
             const active = status === f.key;
             return (
               <Link
                 key={f.key}
                 href={f.key === "all" ? "/" : `/?status=${f.key}`}
-                className={`flex items-center justify-between rounded-lg border px-3 py-2 text-[13px] transition ${
+                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-[13px] transition lg:justify-between ${
                   active
                     ? "border-accent/50 bg-accent/10 text-text"
-                    : "border-transparent text-muted hover:bg-surface"
+                    : "border-border bg-surface text-muted hover:border-accent/30 hover:text-text lg:border-transparent lg:bg-transparent lg:hover:bg-surface"
                 }`}
               >
                 <span className="flex items-center gap-2">
                   <Dot k={f.key} />
                   {f.label}
                 </span>
-                <span className="tabular-nums text-muted">{counts[f.key]}</span>
+                <span className="tabular-nums opacity-70">{counts[f.key]}</span>
               </Link>
             );
           })}
-          <div className="!mt-4 rounded-lg border border-border bg-surface p-3 text-[12px] text-muted">
+          <div className="hidden rounded-lg border border-border bg-surface p-3 text-[12px] leading-relaxed text-muted lg:mt-3 lg:block">
             New messages are triaged automatically. Safe cases are actioned;
             risky ones land in <span className="text-warn">Escalated</span>.
           </div>
@@ -125,68 +146,71 @@ export default async function Home({
           ) : (
             <div className="stagger glass overflow-hidden rounded-2xl">
               {tickets.map((t) => (
-                <article
-                  key={t.id}
-                  className="border-b border-border-soft p-4 transition last:border-0 hover:bg-surface-2"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex min-w-0 items-center gap-2.5">
-                      <span
-                        className={`mt-0.5 h-2 w-2 shrink-0 rounded-full ${
-                          t.status === "escalated"
-                            ? "bg-warn"
-                            : t.status === "resolved"
-                              ? "bg-good"
-                              : "bg-muted"
-                        }`}
-                      />
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="truncate font-medium">
-                            {t.subject || "(no subject)"}
-                          </span>
-                          {t.urgency === "high" && <Pill>high</Pill>}
-                        </div>
-                        <div className="text-[12px] text-muted">{t.sender}</div>
-                      </div>
-                    </div>
-                    {t.category && (
-                      <span className="shrink-0 rounded-md bg-bg px-2 py-0.5 text-[11px] text-muted">
-                        {t.category}
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="mt-2 line-clamp-1 pl-[18px] text-[13px] text-muted">
-                    {t.body}
-                  </p>
-
-                  <div className="mt-2 flex flex-wrap items-center gap-2 pl-[18px] text-[12px]">
-                    <span
-                      className={
-                        t.status === "resolved" ? "text-good" : "text-warn"
-                      }
-                    >
-                      {t.action_taken
-                        ? `✓ ${t.action_taken}`
-                        : `→ ${t.proposed_action ?? "review"}`}
-                    </span>
-                    {t.reason && (
-                      <span className="text-muted">· {t.reason}</span>
-                    )}
-                  </div>
-                </article>
+                <TicketRow key={t.id} t={t} />
               ))}
             </div>
           )}
-          {totalPages > 1 && <Pagination status={status} page={page} totalPages={totalPages} />}
+          {totalPages > 1 && (
+            <Pagination status={status} page={page} totalPages={totalPages} />
+          )}
         </section>
       </div>
     </div>
   );
 }
 
-function StatusDonut({
+/* Single ticket row: clear visual hierarchy (subject -> sender -> preview ->
+   action), with category + urgency badges and a hover state. */
+function TicketRow({ t }: { t: Ticket }) {
+  const dotColor =
+    t.status === "escalated"
+      ? "bg-warn"
+      : t.status === "resolved"
+        ? "bg-good"
+        : "bg-muted";
+  return (
+    <article className="group border-b border-border-soft p-4 transition last:border-0 hover:bg-surface-2">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span
+            className={`mt-0.5 h-2 w-2 shrink-0 rounded-full ${dotColor}`}
+          />
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="truncate font-medium">
+                {t.subject || "(no subject)"}
+              </span>
+              {t.urgency === "high" && <Pill>high</Pill>}
+            </div>
+            <div className="text-[12px] text-muted">{t.sender}</div>
+          </div>
+        </div>
+        {t.category && (
+          <span className="shrink-0 rounded-md border border-border-soft bg-bg px-2 py-0.5 text-[11px] text-muted">
+            {t.category}
+          </span>
+        )}
+      </div>
+
+      <p className="mt-2 line-clamp-1 pl-[18px] text-[13px] text-muted">
+        {t.body}
+      </p>
+
+      <div className="mt-2 flex flex-wrap items-center gap-2 pl-[18px] text-[12px]">
+        <span className={t.status === "resolved" ? "text-good" : "text-warn"}>
+          {t.action_taken
+            ? `✓ ${t.action_taken}`
+            : `→ ${t.proposed_action ?? "review"}`}
+        </span>
+        {t.reason && <span className="text-muted">· {t.reason}</span>}
+      </div>
+    </article>
+  );
+}
+
+/* Compact triage summary that lives in the hero's right column:
+   donut on top, clearly-labelled legend below, all in one short card. */
+function TriagePanel({
   resolved,
   escalated,
   pending,
@@ -198,84 +222,110 @@ function StatusDonut({
   autoRate: number;
 }) {
   const total = resolved + escalated + pending;
-  if (!total) return null;
   const segs = [
-    { label: "Resolved", value: resolved, color: "rgb(var(--good))" },
-    { label: "Escalated", value: escalated, color: "rgb(var(--accent))" },
-    { label: "Pending", value: pending, color: "rgb(var(--muted))" },
+    {
+      label: "Auto-resolved",
+      value: resolved,
+      color: "rgb(var(--good))",
+    },
+    {
+      label: "Escalated",
+      value: escalated,
+      color: "rgb(var(--accent))",
+    },
+    {
+      label: "Waiting on human",
+      value: pending,
+      color: "rgb(var(--muted))",
+    },
   ].filter((s) => s.value > 0);
 
   let cum = 0;
   return (
-    <section className="glass rounded-2xl p-5 sm:p-6">
-      <h2 className="mb-5 flex items-center gap-2 text-sm font-medium text-muted">
+    <section className="glass flex flex-col rounded-2xl p-5 animate-fade-up">
+      <h2 className="flex items-center justify-between gap-2 text-[13px] font-medium text-muted">
         Triage outcomes
         <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-          updates hourly
+          live
         </span>
       </h2>
-      <div className="flex flex-col items-center gap-7 sm:flex-row sm:justify-center sm:gap-14">
-        <div className="relative h-[150px] w-[150px] shrink-0">
-          <svg viewBox="0 0 160 160" className="h-full w-full -rotate-90">
-            <circle
-              cx="80"
-              cy="80"
-              r="56"
-              fill="none"
-              stroke="rgb(var(--text) / 0.06)"
-              strokeWidth="16"
-            />
-            {segs.map((s, i) => {
-              const off = cum;
-              cum += (s.value / total) * 100;
-              return (
-                <circle
-                  key={s.label}
-                  cx="80"
-                  cy="80"
-                  r="56"
-                  fill="none"
-                  stroke={s.color}
-                  strokeWidth="16"
-                  pathLength={100}
-                  strokeDashoffset={-off}
-                  className="donut-seg"
-                  style={
-                    {
-                      "--p": ((s.value / total) * 100).toFixed(2),
-                      animationDelay: `${(i * 0.25).toFixed(2)}s`,
-                    } as React.CSSProperties
-                  }
-                />
-              );
-            })}
-          </svg>
-          <div className="absolute inset-0 grid place-items-center text-center">
-            <div>
-              <div className="text-2xl font-semibold tabular-nums">
-                {autoRate}%
+
+      {total === 0 ? (
+        <p className="mt-6 text-[13px] text-muted">No tickets yet.</p>
+      ) : (
+        <div className="mt-3 flex items-center gap-5">
+          <div className="relative h-[112px] w-[112px] shrink-0">
+            <svg viewBox="0 0 160 160" className="h-full w-full -rotate-90">
+              <circle
+                cx="80"
+                cy="80"
+                r="62"
+                fill="none"
+                stroke="rgb(var(--text) / 0.06)"
+                strokeWidth="14"
+              />
+              {segs.map((s, i) => {
+                const off = cum;
+                cum += (s.value / total) * 100;
+                return (
+                  <circle
+                    key={s.label}
+                    cx="80"
+                    cy="80"
+                    r="62"
+                    fill="none"
+                    stroke={s.color}
+                    strokeWidth="14"
+                    pathLength={100}
+                    strokeDashoffset={-off}
+                    className="donut-seg"
+                    strokeLinecap="round"
+                    style={
+                      {
+                        "--p": ((s.value / total) * 100).toFixed(2),
+                        animationDelay: `${(i * 0.2).toFixed(2)}s`,
+                      } as React.CSSProperties
+                    }
+                  />
+                );
+              })}
+            </svg>
+            <div className="absolute inset-0 grid place-items-center text-center">
+              <div>
+                <div className="text-xl font-semibold tabular-nums">
+                  {autoRate}%
+                </div>
+                <div className="text-[10px] text-muted">auto</div>
               </div>
-              <div className="text-[11px] text-muted">auto-resolved</div>
             </div>
           </div>
-        </div>
 
-        <div className="grid w-full gap-2.5 sm:max-w-xs">
-          {segs.map((s) => (
-            <div key={s.label} className="flex items-center gap-3 text-[13px]">
-              <span
-                className="h-2.5 w-2.5 rounded-sm"
-                style={{ background: s.color }}
-              />
-              <span className="flex-1">{s.label}</span>
-              <span className="tabular-nums text-muted">
-                {s.value} · {Math.round((s.value / total) * 100)}%
-              </span>
-            </div>
-          ))}
+          <div className="grid min-w-0 flex-1 gap-2">
+            {segs.map((s) => (
+              <div
+                key={s.label}
+                className="flex items-center gap-2.5 text-[12.5px]"
+              >
+                <span
+                  className="h-2.5 w-2.5 shrink-0 rounded-sm"
+                  style={{ background: s.color }}
+                />
+                <span className="min-w-0 flex-1 truncate text-muted">
+                  {s.label}
+                </span>
+                <span className="shrink-0 font-medium tabular-nums">
+                  {s.value}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      <p className="mt-4 border-t border-border-soft pt-3 text-[11px] text-muted">
+        Updated automatically as new tickets arrive.
+      </p>
     </section>
   );
 }
@@ -309,13 +359,19 @@ function Pagination({
   const disabled = "pointer-events-none opacity-40";
   return (
     <nav className="flex items-center justify-between pt-1 text-muted">
-      <a href={`${base}page=${page - 1}`} className={`${linkCls} ${page <= 1 ? disabled : ""}`}>
+      <a
+        href={`${base}page=${page - 1}`}
+        className={`${linkCls} ${page <= 1 ? disabled : ""}`}
+      >
         ← Newer
       </a>
       <span className="text-[12px]">
         Page {page} of {totalPages}
       </span>
-      <a href={`${base}page=${page + 1}`} className={`${linkCls} ${page >= totalPages ? disabled : ""}`}>
+      <a
+        href={`${base}page=${page + 1}`}
+        className={`${linkCls} ${page >= totalPages ? disabled : ""}`}
+      >
         Older →
       </a>
     </nav>

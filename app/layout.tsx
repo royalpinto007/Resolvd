@@ -40,7 +40,11 @@ export default function RootLayout({
       <body className="app-bg min-h-screen font-sans antialiased">
         <div className="relative z-10 flex min-h-screen flex-col">
           <Nav />
-          <main className="w-full flex-1 px-5 py-8 md:px-8">{children}</main>
+          {/* Centered max-width container: keeps content dense on wide desktops.
+              pb-24 leaves room so the floating chat button never covers content. */}
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 md:px-6 md:py-8">
+            {children}
+          </main>
           <footer className="border-t border-border-soft px-5 py-5 md:px-8">
             <div className="flex flex-col gap-2 text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between">
               <span>Triage, act within policy, escalate the rest.</span>
