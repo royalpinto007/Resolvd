@@ -5,6 +5,7 @@ import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { themeInitScript } from "@/components/ThemeToggle";
 import { ChatWidget } from "@/components/ChatWidget";
+import { SuiteLinks } from "@/components/SuiteLinks";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -46,16 +47,15 @@ export default function RootLayout({
             {children}
           </main>
           <footer className="border-t border-border-soft px-5 py-5 md:px-8">
-            <div className="flex flex-col gap-2 text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between">
-              <span>Triage, act within policy, escalate the rest.</span>
-              <span className="flex gap-4">
-                <Link href="/about" className="transition hover:text-text">
-                  About
-                </Link>
-                <Link href="/help" className="transition hover:text-text">
-                  Help
-                </Link>
-              </span>
+            <div className="flex flex-col gap-3 text-[12px] text-muted">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span>Triage, act within policy, escalate the rest.</span>
+                <span className="flex gap-4">
+                  <Link href="/about" className="transition hover:text-text">About</Link>
+                  <Link href="/help" className="transition hover:text-text">Help</Link>
+                </span>
+              </div>
+              <SuiteLinks />
             </div>
           </footer>
         </div>
