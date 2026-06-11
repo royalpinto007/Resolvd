@@ -4,45 +4,38 @@
 
 /* Dark is the default theme. */
 :root {
-  --bg: 13 12 11;
-  --surface: 23 20 17;
-  --surface-2: 30 26 21;
-  --border: 49 43 35;
-  --border-soft: 35 31 26;
-  --muted: 158 149 137;
-  --text: 245 241 235;
-  --accent: 251 191 36;
-  --accent-2: 251 146 60;
+  --bg: 7 10 15;
+  --surface: 14 20 29;
+  --surface-2: 20 29 40;
+  --border: 36 51 67;
+  --border-soft: 27 39 52;
+  --muted: 143 158 176;
+  --text: 238 244 248;
+  --accent: 56 189 248;
+  --accent-2: 34 211 238;
   --good: 63 185 80;
-  --bad: 248 113 73;
-  --warn: 234 179 8;
-  --glow-1: 245 158 11;
-  --glow-2: 251 146 60;
+  --bad: 248 81 73;
+  --warn: 250 204 21;
+  --glow-1: 14 165 233;
+  --glow-2: 34 211 238;
   color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --bg: 250 250 252;
+  --bg: 247 250 252;
   --surface: 255 255 255;
-  --surface-2: 246 247 249;
-  --border: 226 228 233;
-  --border-soft: 235 236 240;
-  --muted: 95 98 110;
-  --text: 18 20 27;
-  --bg: 252 251 249;
-  --surface: 255 255 255;
-  --surface-2: 250 248 245;
-  --border: 233 228 222;
-  --border-soft: 240 236 231;
-  --muted: 110 102 92;
-  --text: 28 24 18;
-  --accent: 217 119 6;
-  --accent-2: 234 88 12;
+  --surface-2: 241 246 249;
+  --border: 219 228 236;
+  --border-soft: 231 238 243;
+  --muted: 91 108 124;
+  --text: 15 23 32;
+  --accent: 2 132 199;
+  --accent-2: 8 145 178;
   --good: 22 134 60;
-  --bad: 201 60 42;
-  --warn: 176 116 4;
-  --glow-1: 217 119 6;
-  --glow-2: 234 88 12;
+  --bad: 201 42 42;
+  --warn: 180 83 9;
+  --glow-1: 14 165 233;
+  --glow-2: 8 145 178;
   color-scheme: light;
 }
 

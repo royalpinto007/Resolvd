@@ -57,14 +57,15 @@ export default async function Home({
       {/* ---- Compact hero: two columns on desktop (copy + CTAs left, live
            triage summary right). Collapses to a single column on mobile. ---- */}
       <section className="grid items-stretch gap-4 lg:grid-cols-[1.35fr_1fr]">
-        <div className="glass flex flex-col rounded-2xl p-6 animate-fade-up">
+        <div className="glass relative flex flex-col overflow-hidden rounded-2xl p-6 animate-fade-up">
+          <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-accent/20 blur-3xl" />
           <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[11px] uppercase tracking-widest text-muted">
             AI support inbox
           </span>
-          <h1 className="gradient-text mt-3 text-[1.9rem] font-semibold leading-tight tracking-tight sm:text-[2.2rem]">
-            Reads every ticket, then acts.
+          <h1 className="gradient-text relative mt-3 text-[2.1rem] font-semibold leading-tight tracking-tight sm:text-[2.65rem]">
+            Reads every ticket, decides what can safely move.
           </h1>
-          <p className="mt-2 max-w-xl text-[14px] leading-relaxed text-muted">
+          <p className="relative mt-3 max-w-2xl text-[14px] leading-relaxed text-muted">
             Resolvd triages each message (category, urgency, sentiment),
             auto-handles the safe cases end to end, and escalates the risky ones
             to a human with a proposed action attached.
@@ -107,6 +108,24 @@ export default async function Home({
           escalated={escalated}
           pending={pending}
           autoRate={autoRate}
+        />
+      </section>
+
+      <section className="grid gap-3 sm:grid-cols-3">
+        <FlowStep
+          step="01"
+          title="Triage"
+          body="Classify category, urgency, sentiment, and policy risk."
+        />
+        <FlowStep
+          step="02"
+          title="Act"
+          body="Auto-resolve safe tickets with the approved workflow."
+        />
+        <FlowStep
+          step="03"
+          title="Escalate"
+          body="Hand off risky cases with context and proposed action."
         />
       </section>
 
@@ -205,6 +224,30 @@ function TicketRow({ t }: { t: Ticket }) {
         {t.reason && <span className="text-muted">· {t.reason}</span>}
       </div>
     </article>
+  );
+}
+
+function FlowStep({
+  step,
+  title,
+  body,
+}: {
+  step: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="glass rounded-2xl p-4">
+      <div className="flex items-center gap-3">
+        <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent/12 font-mono text-[12px] font-semibold text-accent">
+          {step}
+        </span>
+        <div>
+          <div className="font-medium">{title}</div>
+          <p className="mt-0.5 text-[12px] leading-5 text-muted">{body}</p>
+        </div>
+      </div>
+    </div>
   );
 }
 
