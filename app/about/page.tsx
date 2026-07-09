@@ -2,24 +2,46 @@ import Link from "next/link";
 
 export const metadata = { title: "About: Resolvd" };
 
+function FeatureIcon({ d }: { d: string }) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d={d} />
+    </svg>
+  );
+}
+
 const features = [
   {
-    icon: "◎",
+    // Target: classify what came in.
+    icon: <FeatureIcon d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12Zm0-3.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />,
     title: "Triages instantly",
     body: "Every incoming ticket is classified by category, urgency and sentiment.",
   },
   {
-    icon: "✓",
+    // Check: handled end to end.
+    icon: <FeatureIcon d="M2.5 8.5 6 12l7.5-8" />,
     title: "Acts within policy",
     body: "Order status and small refunds are handled end to end, automatically.",
   },
   {
-    icon: "⚑",
+    // Flag: raised to a human.
+    icon: <FeatureIcon d="M3.5 14V2.5m0 0h8.2l-2 3 2 3H3.5" />,
     title: "Escalates the risk",
     body: "Big refunds, complaints and angry customers go to a human with a plan.",
   },
   {
-    icon: "✦",
+    // Spark: the proposed action, ready to approve.
+    icon: <FeatureIcon d="M8 2c.5 2.9 1.7 4.6 4.6 5.4v.4c-2.9.8-4.1 2.5-4.6 5.4h-.4c-.5-2.9-1.7-4.6-4.6-5.4v-.4c2.9-.8 4.1-2.5 4.6-5.4H8Z" />,
     title: "One-tap approval",
     body: "Escalations carry a proposed action, approved from the Greenlite app.",
   },

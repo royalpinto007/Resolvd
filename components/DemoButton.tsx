@@ -42,7 +42,18 @@ export function DemoButton() {
           disabled={busy}
           className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-gradient-to-br from-accent to-accent-2 px-4 py-2 text-[13px] font-semibold text-bg transition hover:opacity-90 disabled:opacity-60"
         >
-          {busy ? "Sending…" : "▶ Send a test ticket"}
+          {!busy && (
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 12 12"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M2.5 1.7a.6.6 0 0 1 .9-.52l7 4.3a.6.6 0 0 1 0 1.04l-7 4.3a.6.6 0 0 1-.9-.52V1.7Z" />
+            </svg>
+          )}
+          {busy ? "Sending…" : "Send a test ticket"}
         </button>
         <span className="text-[12px] text-muted">
           watch it get triaged and acted on, or escalated

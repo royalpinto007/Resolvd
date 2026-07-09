@@ -2,40 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark is the default theme. */
+/* Dark is the default theme: warm near-black with copper accents. */
 :root {
-  --bg: 7 10 15;
-  --surface: 14 20 29;
-  --surface-2: 20 29 40;
-  --border: 36 51 67;
-  --border-soft: 27 39 52;
-  --muted: 143 158 176;
-  --text: 238 244 248;
-  --accent: 56 189 248;
-  --accent-2: 34 211 238;
-  --good: 63 185 80;
-  --bad: 248 81 73;
-  --warn: 250 204 21;
-  --glow-1: 14 165 233;
-  --glow-2: 34 211 238;
+  --bg: 13 12 10;
+  --surface: 18 17 16;
+  --surface-2: 26 24 21;
+  --border: 42 40 36;
+  --border-soft: 31 29 26;
+  --muted: 157 149 136;
+  --text: 239 236 229;
+  --accent: 201 163 92;
+  --accent-2: 226 194 136;
+  --good: 118 179 122;
+  --bad: 235 111 101;
+  --warn: 224 178 96;
+  --glow-1: 201 163 92;
+  --glow-2: 226 194 136;
   color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --bg: 247 250 252;
-  --surface: 255 255 255;
-  --surface-2: 241 246 249;
-  --border: 219 228 236;
-  --border-soft: 231 238 243;
-  --muted: 91 108 124;
-  --text: 15 23 32;
-  --accent: 2 132 199;
-  --accent-2: 8 145 178;
+  --bg: 249 247 242;
+  --surface: 255 254 251;
+  --surface-2: 243 239 231;
+  --border: 226 220 208;
+  --border-soft: 235 230 220;
+  --muted: 122 113 98;
+  --text: 36 32 26;
+  --accent: 158 118 48;
+  --accent-2: 128 94 36;
   --good: 22 134 60;
-  --bad: 201 42 42;
-  --warn: 180 83 9;
-  --glow-1: 14 165 233;
-  --glow-2: 8 145 178;
+  --bad: 190 52 44;
+  --warn: 166 112 16;
+  --glow-1: 201 163 92;
+  --glow-2: 226 194 136;
   color-scheme: light;
 }
 
@@ -106,7 +106,8 @@ body {
       rgb(var(--surface) / 0.55)
     );
     backdrop-filter: blur(12px);
-    border: 1px solid rgb(var(--text) / 0.08);
+    /* Hairline: rgba(239,236,229,.09) in dark, adapts in light. */
+    border: 1px solid rgb(var(--text) / 0.09);
     box-shadow:
       0 1px 0 0 rgb(255 255 255 / 0.04) inset,
       0 12px 40px -18px rgb(0 0 0 / 0.6);

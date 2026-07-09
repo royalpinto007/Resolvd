@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { themeInitScript } from "@/components/ThemeToggle";
@@ -15,6 +15,13 @@ const inter = Inter({
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
+});
+const serif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -33,7 +40,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="dark"
-      className={`${inter.variable} ${mono.variable}`}
+      className={`${inter.variable} ${mono.variable} ${serif.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />

@@ -54,6 +54,12 @@ export default async function Home({
 
   return (
     <div className="space-y-6">
+      {/* One-line orientation for non-technical visitors. */}
+      <p className="text-center font-display text-[17px] italic tracking-wide text-muted animate-fade-in sm:text-[19px]">
+        Your support inbox, triaged and acted on by an agent,{" "}
+        <span className="text-accent">safely</span>.
+      </p>
+
       {/* ---- Compact hero: two columns on desktop (copy + CTAs left, live
            triage summary right). Collapses to a single column on mobile. ---- */}
       <section className="grid items-stretch gap-4 lg:grid-cols-[1.35fr_1fr]">
@@ -63,7 +69,8 @@ export default async function Home({
             AI support inbox
           </span>
           <h1 className="gradient-text relative mt-3 text-[2.1rem] font-semibold leading-tight tracking-tight sm:text-[2.65rem]">
-            Reads every ticket, decides what can safely move.
+            Reads <em className="font-display font-normal">every ticket</em>,
+            decides what can safely move.
           </h1>
           <p className="relative mt-3 max-w-2xl text-[14px] leading-relaxed text-muted">
             Resolvd triages each message (category, urgency, sentiment),
