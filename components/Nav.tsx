@@ -10,7 +10,7 @@ export function Nav() {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
               <path
                 d="M4 12l5 5L20 6"
-                stroke="#0c0a10"
+                stroke="#04211d"
                 strokeWidth="2.6"
                 strokeLinecap="round"
                 strokeLinejoin="round"

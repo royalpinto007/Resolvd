@@ -55,7 +55,7 @@ export default async function Home({
   return (
     <div className="space-y-6">
       {/* One-line orientation for non-technical visitors. */}
-      <p className="text-center font-display text-[17px] italic tracking-wide text-muted animate-fade-in sm:text-[19px]">
+      <p className="text-center font-display text-[16px] tracking-wide text-muted animate-fade-in sm:text-[18px]">
         Your support inbox, triaged and acted on by an agent,{" "}
         <span className="text-accent">safely</span>.
       </p>
@@ -69,7 +69,7 @@ export default async function Home({
             AI support inbox
           </span>
           <h1 className="gradient-text relative mt-3 text-[2.1rem] font-semibold leading-tight tracking-tight sm:text-[2.65rem]">
-            Reads <em className="font-display font-normal">every ticket</em>,
+            Reads <em className="font-display font-normal not-italic">every ticket</em>,
             decides what can safely move.
           </h1>
           <p className="relative mt-3 max-w-2xl text-[14px] leading-relaxed text-muted">
