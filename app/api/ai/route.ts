@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-const GATEWAY = "https://n8n.agentpostmortem.com/webhook/ai-gw";
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
 const RESOLVD_SYSTEM =
   "You are the assistant for Resolvd, an AI support inbox operator. " +
   "Resolvd triages each incoming ticket (category, urgency, sentiment), " +
@@ -66,8 +67,8 @@ export async function POST(req: NextRequest) {
   const fixed = fixedReply(prompt, context);
   if (fixed) return NextResponse.json({ reply: fixed }, { headers: CORS });
 
-  const secret = process.env.AI_GATEWAY_SECRET;
-  if (!secret) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
     return NextResponse.json(
       { error: "AI not configured" },
       { status: 503, headers: CORS },
@@ -84,14 +85,30 @@ export async function POST(req: NextRequest) {
   const outputMax = Math.min(Math.max(max ?? 140, 32), 220);
 
   try {
-    const r = await fetch(GATEWAY, {
+    const r = await fetch(GROQ_URL, {
       method: "POST",
-      headers: { "content-type": "application/json", "x-ai-secret": secret },
-      body: JSON.stringify({ system, prompt: full, max: outputMax }),
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: full },
+        ],
+        max_tokens: outputMax,
+      }),
     });
-    const d = (await r.json()) as { reply?: string; error?: string };
+    const d = (await r.json()) as {
+      choices?: { message?: { content?: string } }[];
+      error?: { message?: string };
+    };
     return NextResponse.json(
-      { reply: cleanReply(d.reply), error: d.error },
+      {
+        reply: cleanReply(d.choices?.[0]?.message?.content),
+        error: d.error?.message,
+      },
       { headers: CORS },
     );
   } catch {
