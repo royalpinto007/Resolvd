@@ -6,6 +6,12 @@ within policy, issues the refund, sends the order status, closes the ticket, and
 escalates only the cases that genuinely need a person, with the proposed action
 already attached.
 
+## Demo
+
+[![Resolvd demo](assets/demo-thumb.png)](assets/demo.mp4)
+
+▶ [Watch the demo](assets/demo.mp4) · Live: https://resolvd.agentpostmortem.com
+
 ## Flow
 
 1. A message hits `POST /api/inbound` (helpdesk webhook or email forwarder).
